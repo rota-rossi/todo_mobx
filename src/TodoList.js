@@ -1,21 +1,14 @@
 import React, { Component } from 'react';
 import TodoItem from './TodoItem'
+import { inject, observer } from 'mobx-react'
 
-
-import todos from '../data/todolist'
-
-
+@inject('todoStore') @observer
 class TodoList extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      todos: [],
       newTodo: ''
     }
-  }
-
-  componentDidMount() {
-    setTimeout(() => this.setState({ todos: [...this.state.todos, ...todos] }), 3000)
   }
 
   updateNewTodo = (ev) => {
@@ -24,16 +17,16 @@ class TodoList extends Component {
 
   addTodo = (ev) => {
     ev.preventDefault();
-    this.setState({ todos: [...this.state.todos, this.state.newTodo], newTodo: '' })
+    this.props.todoStore.addTodo(this.state.newTodo)
+    this.setState({ newTodo: '' })
   }
 
   removeTodo = (removedTodo) => {
-    let todos = this.state.todos.filter(todo => todo !== removedTodo)
-    this.setState({ todos })
+    this.props.todoStore.removeTodo(removedTodo)
   }
 
   render() {
-    const todos = this.state.todos
+    const { todos } = this.props.todoStore
     return (
       <div>
         <ul>
